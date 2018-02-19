@@ -28,6 +28,7 @@ import com.hajj.trekkon.jamaah.R;
 import com.hajj.trekkon.jamaah.adapter.RV_bt;
 import com.hajj.trekkon.jamaah.model.BTDeviceModel;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -233,23 +234,22 @@ public class ScanActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            //String remoteDeviceName = intent.getStringExtra(BluetoothDevice.EXTRA_NAME);
-            //BluetoothDevice remoteDevice;
-            //remoteDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+
+            String action = intent.getAction();
+            BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
 
             btDeviceModel = new BTDeviceModel();
-            btDeviceModel.setEXTRANAME(intent.getStringExtra(BluetoothDevice.EXTRA_NAME));
-            btDeviceModel.setEXTRAUUID(intent.getStringExtra(BluetoothDevice.EXTRA_UUID));
-            btDeviceModel.setBONDBONDED(intent.getIntExtra(String.valueOf(BluetoothDevice.BOND_BONDED),0) );
+
+            btDeviceModel.setName(mDevice.getName());
+            btDeviceModel.setAddress(mDevice.getAddress());
+            btDeviceModel.setBONDBONDED(mDevice.getBondState());
+            btDeviceModel.setBluetoothDevice(mDevice);
 
             btDeviceModels.add(btDeviceModel);
-
-            //toastText = "Ditemukan : " + remoteDeviceName;
-            //Toast.makeText(ScanActivity.this, btDeviceModel.getEXTRANAME() + " " + btDeviceModel.getBONDBONDED().toString() , Toast.LENGTH_SHORT).show();
-
             rv_bt.notifyDataSetChanged();
             tvJumlah.setText(String.valueOf(btDeviceModels.size()));
-
 
         }
     };
@@ -281,4 +281,26 @@ public class ScanActivity extends AppCompatActivity {
         }
         return true;
     }
+
+
+
+    private void pairDevice(BluetoothDevice device) {
+        try {
+            Method method = device.getClass().getMethod("createBond", (Class[]) null);
+            method.invoke(device, (Object[]) null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void unpairDevice(BluetoothDevice device) {
+        try {
+            Method method = device.getClass().getMethod("removeBond", (Class[]) null);
+            method.invoke(device, (Object[]) null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

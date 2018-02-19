@@ -1,9 +1,29 @@
 package com.hajj.trekkon.jamaah.model;
+import android.bluetooth.BluetoothDevice;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class BTDeviceModel {
 
+
+    @SerializedName("bluetoothDevice")
+    @Expose
+    private BluetoothDevice bluetoothDevice;
+
+    @SerializedName("Tipe")
+    @Expose
+    private String Tipe;
+    @SerializedName("UUID")
+    @Expose
+    private String UUID;
+
+    @SerializedName("Name")
+    @Expose
+    private String Name;
+    @SerializedName("Address")
+    @Expose
+    private String Address;
     @SerializedName("EXTRA_NAME")
     @Expose
     private String eXTRANAME;
@@ -37,6 +57,58 @@ public class BTDeviceModel {
     @SerializedName("DEVICE_TYPE_DUAL")
     @Expose
     private Integer dEVICETYPEDUAL;
+
+
+    public BluetoothDevice getBluetoothDevice() {
+        return bluetoothDevice;
+    }
+
+    public void setBluetoothDevice(BluetoothDevice bluetoothDevice) {
+        this.bluetoothDevice = bluetoothDevice;
+    }
+
+
+    public String getTipe() {
+        return Tipe;
+    }
+
+    public void setTipe(String Tipe) {
+        this.Tipe = Tipe;
+    }
+
+    public String getUUID() {
+        return UUID;
+    }
+
+    public void setUUID(String UUID) {
+        this.UUID = UUID;
+    }
+
+
+
+
+
+    public String getName() {
+        return  Name;
+    }
+
+    public void setName(String Name) {
+        this.Name = Name;
+    }
+
+
+
+
+
+    public String getAddress() {
+        return  Address;
+    }
+
+    public void setAddress(String Address) {
+        this.Address = Address;
+    }
+
+
 
     public String getEXTRANAME() {
         return eXTRANAME;

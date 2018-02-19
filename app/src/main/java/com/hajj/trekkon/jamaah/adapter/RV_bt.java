@@ -1,16 +1,20 @@
 package com.hajj.trekkon.jamaah.adapter;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.hajj.trekkon.jamaah.R;
 import com.hajj.trekkon.jamaah.model.BTDeviceModel;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +36,9 @@ public class RV_bt extends RecyclerView.Adapter<RV_bt.RV_btViewHolder> {
 
 
 
-        TextView tvNama, tvUUID, tvStatus;
+        TextView tvNama, tvUUID, tvStatus, tvTipe, tvAlamat;
+        Button btnPair, btnUnpair;
+        BluetoothDevice bluetoothDevice;
 
         List<BTDeviceModel> btDeviceModelList = new ArrayList<BTDeviceModel>();
         Context context;
@@ -47,6 +53,12 @@ public class RV_bt extends RecyclerView.Adapter<RV_bt.RV_btViewHolder> {
             tvUUID=(TextView)v.findViewById(R.id.tvUUID);
             tvNama=(TextView)v.findViewById(R.id.tvNama);
             tvStatus=(TextView)v.findViewById(R.id.tvStatus);
+            tvAlamat=(TextView)v.findViewById(R.id.tvAlamat);
+            tvTipe=(TextView)v.findViewById(R.id.tvTipe);
+
+            btnPair=(Button)v.findViewById(R.id.btnPair);
+            btnUnpair=(Button)v.findViewById(R.id.btnUnpair);
+
 
         }
 
@@ -60,7 +72,7 @@ public class RV_bt extends RecyclerView.Adapter<RV_bt.RV_btViewHolder> {
             BTDeviceModel btDeviceModel = this.btDeviceModelList.get(position);
 
 
-            nama= btDeviceModel.getEXTRANAME();
+            nama= btDeviceModel.getName();
             uuid = btDeviceModel.getEXTRAUUID();
             status = String.valueOf(btDeviceModel.getBONDBONDED());
 
@@ -107,9 +119,35 @@ public class RV_bt extends RecyclerView.Adapter<RV_bt.RV_btViewHolder> {
         holder.setIsRecyclable(false);
 
 
-        holder.tvNama.setText(btDeviceModelList.get(position).getEXTRANAME());
-        holder.tvUUID.setText(btDeviceModelList.get(position).getEXTRAUUID());
-        holder.tvStatus.setText(btDeviceModelList.get(position).getBONDBONDED().toString());
+        holder.tvNama.setText(btDeviceModelList.get(position).getName());
+        holder.tvUUID.setText(btDeviceModelList.get(position).getUUID());
+        holder.tvTipe.setText(btDeviceModelList.get(position).getTipe());
+        holder.tvAlamat.setText(btDeviceModelList.get(position).getAddress());
+        holder.tvStatus.setText(String.valueOf(btDeviceModelList.get(position).getBONDBONDED()));
+        holder.bluetoothDevice = btDeviceModelList.get(position).getBluetoothDevice();
+
+        holder.btnPair.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.bluetoothDevice.createBond();
+            }
+        });
+
+        holder.btnUnpair.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Method method = holder.bluetoothDevice.getClass().getMethod("removeBond", (Class[]) null);
+                    method.invoke(holder.bluetoothDevice, (Object[]) null);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 
